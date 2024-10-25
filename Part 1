@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+
+namespace TheGoldenSpoon
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Название ресторана
+            Console.WriteLine("Welcome to 'The Golden Spoon' restaurant!");
+            Console.WriteLine("Select a menu category to see available dishes:");
+            
+            // Список категорий меню
+            Dictionary<int, string> categories = new Dictionary<int, string>
+            {
+                { 1, "Main Dishes" },
+                { 2, "Breakfast" },
+                { 3, "Salads" },
+                { 4, "Appetizers" },
+                { 5, "Drinks" },
+                { 6, "Tea" },
+                { 7, "Alcohol" }
+            };
+            
+            // Список блюд и напитков по категориям
+            Dictionary<int, List<string>> menuItems = new Dictionary<int, List<string>>
+            {
+                { 1, new List<string> { "Beef Steak with Potatoes", "Grilled Fish", "Teriyaki Chicken", "Seafood Pasta" } },
+                { 2, new List<string> { "Vegetable Omelet", "Oatmeal with Fruits", "Pancakes with Berries", "Avocado Toast" } },
+                { 3, new List<string> { "Caesar Salad with Chicken", "Greek Salad", "Shrimp Salad", "Vegetable Salad with Cheese" } },
+                { 4, new List<string> { "Beef Carpaccio", "Cheese Plate", "Salmon Tartare", "Hummus with Pita" } },
+                { 5, new List<string> { "Coffee", "Cappuccino", "Freshly Squeezed Juice", "Sodas" } },
+                { 6, new List<string> { "Black Tea", "Green Tea", "Herbal Tea", "Jasmine Tea" } },
+                { 7, new List<string> { "Red Wine", "White Wine", "Beer", "Cocktail 'Mojito'" } }
+            };
+
+            bool isRunning = true;
+
+            // Основной цикл программы
+            while (isRunning)
+            {
+                // Вывод категорий
+                foreach (var category in categories)
+                {
+                    Console.WriteLine($"{category.Key}. {category.Value}");
+                }
+
+                Console.WriteLine("Enter the category number to view dishes, or 0 to exit:");
+
+                // Чтение выбора пользователя
+                int choice;
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= categories.Count)
+                {
+                    if (choice == 0)
+                    {
+                        // Завершение работы программы
+                        Console.WriteLine("Thank you for visiting 'The Golden Spoon'! See you soon!");
+                        isRunning = false;
+                    }
+                    else
+                    {
+                        // Вывод блюд для выбранной категории
+                        Console.WriteLine($"\n{categories[choice]}:");
+                        foreach (var item in menuItems[choice])
+                        {
+                            Console.WriteLine($"- {item}");
+                        }
+                        Console.WriteLine("\nPress any key to return to the category selection.");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a category number.");
+                }
+            }
+        }
+    }
+}

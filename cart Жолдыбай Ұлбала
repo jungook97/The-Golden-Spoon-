@@ -1,0 +1,197 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace TheGoldenSpoon
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to 'The Golden Spoon' restaurant!");
+            Console.WriteLine("Select a menu category to see available dishes:");
+
+            Dictionary<int, string> categories = new Dictionary<int, string>
+            {
+                { 1, "Main Dishes" },
+                { 2, "Breakfast" },
+                { 3, "Salads" },
+                { 4, "Appetizers" },
+                { 5, "Drinks" },
+                { 6, "Tea" },
+                { 7, "Alcohol" }
+            };
+
+            Dictionary<int, Dictionary<string, decimal>> menuItems = new Dictionary<int, Dictionary<string, decimal>>
+            {
+                { 1, new Dictionary<string, decimal>
+                    {
+                        { "Beef Steak with Potatoes", 1500.00m },
+                        { "Grilled Fish", 1600.00m },
+                        { "Teriyaki Chicken", 1550.00m },
+                        { "Seafood Pasta", 1700.00m }
+                    }
+                },
+                { 2, new Dictionary<string, decimal>
+                    {
+                        { "Vegetable Omelet", 1500.00m },
+                        { "Oatmeal with Fruits", 1600.00m },
+                        { "Pancakes with Berries", 1550.00m },
+                        { "Avocado Toast", 1700.00m }
+                    }
+                },
+                { 3, new Dictionary<string, decimal>
+                    {
+                        { "Caesar Salad with Chicken", 1500.00m },
+                        { "Greek Salad", 1600.00m },
+                        { "Shrimp Salad", 1550.00m },
+                        { "Vegetable Salad with Cheese", 1700.00m }
+                    }
+                },
+                { 4, new Dictionary<string, decimal>
+                    {
+                        { "Beef Carpaccio", 1500.00m },
+                        { "Cheese Plate", 1600.00m },
+                        { "Salmon Tartare", 1550.00m },
+                        { "Hummus with Pita", 1700.00m }
+                    }
+                },
+                { 5, new Dictionary<string, decimal>
+                    {
+                        { "Coffee", 1500.00m },
+                        { "Cappuccino", 1600.00m },
+                        { "Freshly Squeezed Juice", 1550.00m },
+                        { "Sodas", 1700.00m }
+                    }
+                },
+                { 6, new Dictionary<string, decimal>
+                    {
+                        { "Black Tea", 1500.00m },
+                        { "Green Tea", 1600.00m },
+                        { "Herbal Tea", 1550.00m },
+                        { "Jasmine Tea", 1700.00m }
+                    }
+                },
+                { 7, new Dictionary<string, decimal>
+                    {
+                        { "Red Wine", 1500.00m },
+                        { "White Wine", 1600.00m },
+                        { "Beer", 1550.00m },
+                        { "Cocktail 'Mojito'", 1700.00m }
+                    }
+                }
+            };
+
+            Cart cart = new Cart();
+            bool isRunning = true;
+
+            while (isRunning)
+            {
+                foreach (var category in categories)
+                {
+                    Console.WriteLine($"{category.Key}. {category.Value}");
+                }
+
+                Console.WriteLine("Enter the category number to view dishes, or 0 to exit:");
+
+                int choice;
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 0 && choice <= categories.Count)
+                {
+                    if (choice == 0)
+                    {
+                        isRunning = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"\n{categories[choice]}:");
+                        int itemNumber = 1;
+                        foreach (var item in menuItems[choice])
+                        {
+                            Console.WriteLine($"{itemNumber}. {item.Key} - {item.Value:F2} Tenge");
+                            itemNumber++;
+                        }
+                        Console.WriteLine("Enter the dish number to add to your cart, 'remove' to remove an item, or 'back' to go back:");
+
+                        string order = Console.ReadLine();
+                        if (order.ToLower() == "back")
+                        {
+                            Console.Clear();
+                            continue;
+                        }
+
+                        if (int.TryParse(order, out int dishNumber) && dishNumber > 0 && dishNumber <= menuItems[choice].Count)
+                        {
+                            string selectedDish = menuItems[choice].Keys.ElementAt(dishNumber - 1);
+                            cart.AddItem(selectedDish, menuItems[choice][selectedDish]);
+                            Console.WriteLine($"{selectedDish} has been added to your cart.");
+                        }
+                        else if (order.ToLower() == "remove")
+                        {
+                            Console.WriteLine("Enter the name of the dish to remove from your cart:");
+                            string removeItem = Console.ReadLine();
+                            cart.RemoveItem(removeItem);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid dish number. Please try again.");
+                        }
+
+                        Console.WriteLine("\nPress any key to return to the category selection.");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a category number.");
+                }
+            }
+
+            Console.Clear();
+            cart.PrintReceipt();
+
+            Console.WriteLine("Thank you for using 'The Golden Spoon' service! See you soon!");
+        }
+    }
+
+    class Cart
+    {
+        private List<string> items = new List<string>();
+        private decimal totalPrice = 0m;
+
+        public void AddItem(string item, decimal price)
+        {
+            items.Add(item);
+            totalPrice += price;
+        }
+
+        public void RemoveItem(string item)
+        {
+            if (items.Remove(item))
+            {
+                Console.WriteLine($"{item} has been removed from your cart.");
+            }
+            else
+            {
+                Console.WriteLine($"{item} not found in your cart.");
+            }
+        }
+
+        public void PrintReceipt()
+        {
+            if (items.Count > 0)
+            {
+                Console.WriteLine("Your order:");
+                foreach (var item in items)
+                {
+                    Console.WriteLine($"- {item}");
+                }
+                Console.WriteLine($"Total amount: {totalPrice:F2} Tenge");
+            }
+            else
+            {
+                Console.WriteLine("You have not ordered anything.");
+            }
+        }
+    }
+}

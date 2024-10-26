@@ -6,14 +6,16 @@ namespace RestaurantSupportService
 {
     class Program
     {
+        static string[] menu = { "Pasta", "Pizza", "Salad", "Soup" };
+
         static void Main(string[] args)
         {
             while (true)
             {
-                Console.WriteLine("Добро пожаловать в службу поддержки ресторана!");
-                Console.WriteLine("1. Просмотреть меню");
-                Console.WriteLine("2. Заказать блюдо");
-                Console.WriteLine("3. Выйти");
+                Console.WriteLine("Welcome to the restaurant support service!");
+                Console.WriteLine("1. View menu");
+                Console.WriteLine("2. Order a dish");
+                Console.WriteLine("3. Exit");
 
                 string choice = Console.ReadLine();
 
@@ -26,29 +28,39 @@ namespace RestaurantSupportService
                         OrderDish();
                         break;
                     case "3":
-                        Console.WriteLine("Спасибо за использование службы поддержки! До свидания.");
+                        Console.WriteLine("Thank you for using the support service! Goodbye.");
                         return;
                     default:
-                        Console.WriteLine("Неверный выбор. Пожалуйста, попробуйте снова.");
+                        Console.WriteLine("Invalid choice. Please enter 1, 2, or 3.");
                         break;
                 }
             }
         }
 
-        // Метод для отображения меню (заглушка)
         static void ShowMenu()
         {
-            Console.WriteLine("Меню отображается здесь.");
+            Console.WriteLine("Menu:");
+            foreach (var dish in menu)
+            {
+                Console.WriteLine($"- {dish}");
+            }
         }
 
-        // Метод для заказа блюда (заглушка)
         static void OrderDish()
         {
-            Console.WriteLine("Введите название блюда для заказа:");
+            Console.WriteLine("Enter the name of the dish to order:");
             string dishName = Console.ReadLine();
 
-            // Заглушка для проверки блюда
-            Console.WriteLine($"Вы заказали: {dishName}");
+            // Check if the dish is in the menu
+            if (Array.Exists(menu, dish => dish.Equals(dishName, StringComparison.OrdinalIgnoreCase)))
+            {
+                Console.WriteLine($"You ordered: {dishName}");
+            }
+            else
+            {
+                Console.WriteLine("Sorry, this dish is not on the menu. Please choose one of the following:");
+                ShowMenu(); // Show the menu again
+            }
         }
     }
 }
